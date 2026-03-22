@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTC Zoo</title>
+    <script src="zoo.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="error-display" style="color: red; margin: 10px; font-weight: bold;"></div>
+    <hr>
+
+        <button id="fake-error">Test error display</button>
+<section id="membership-section">
+    <h3>Member Registration</h3>
+    <form id="membership-form">
+        <input type="text" id="member-name" placeholder="Full Name" required>
+        <input type="email" id="member-email" placeholder="Email Address" required>
+        <select id="member-type">
+            <option value="Individual">Individual</option>
+            <option value="Family">Family</option>
+            <option value="Senior">Senior</option>
+        </select>
+        <input type="date" id="member-start" required>
+        <input type="text" id="member-emergency" placeholder="Emergency Contact" required>
+        <button type="submit">Register Member</button>
+    </form>
+</section>
+
+<hr>
+
+<section id="booking-section">
+    <h3>Book an Animal Encounter</h3>
+    <form id="booking-form">
+        <input type="text" id="visitor-name" placeholder="Your Name" required>
+        <select id="animal-select">
+            </select>
+        <input type="datetime-local" id="booking-time" required>
+        <input type="number" id="group-size" min="1" max="10" value="1" required>
+        <button type="submit">Book Encounter</button>
+    </form>
+</section>
+
+<div id="form-feedback" class="status-pill"></div>
+
+
+    <div id="health-modal" class="modal hidden">
+        <div class="modal-content">
+            <h4>Update Health Status</h4>
+            <input type="text" id="health-input" placeholder="e.g. Excellent">
+            <div class="modal-actions">
+                <button id="save-health-btn">Save</button>
+                <button id="cancel-health-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="zoo-container" class="card-grid"></div>
+    <div id="stats-panel">
+        <p>Total Visitors: <span id="visitor-count">0</span></p>
+        <button id="add-visitor">Add Visitor</button>
+    </div>
+
+    
+    
+</body>
+
+</html>
