@@ -1,0 +1,4 @@
+[
+    { "name": "Zara", "species": "Zebra", "id": 10, "status": "open", "health": "Good" },
+    { "name": "Milo", "species": "Monkey", "id": 11, "status": "closed", "health": "Healthy" }
+]
