@@ -105,7 +105,7 @@ const Security = {
     },
 
     // PART 2 CORS & Cookies
-    allowedOrigins: ["http://localhost", "https://localhost", "http://127.0.0.1:5500"],
+    allowedOrigins: ["http://localhost", "https://localhost", "http://127.0.0.1:5500", "https://zoo-9qur.onrender.com"],
 
     validateOrigin: () => {
         const origin = window.location.origin;
