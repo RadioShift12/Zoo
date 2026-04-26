@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     console.log(`Visitor located at: ${latitude}, ${longitude}`);
-                    // In a real app, you'd compare this to your "Animal Exhibit" coords
                     UI.renderAnimals(container,longitude,latitude);
                 },
                 () => {
@@ -28,7 +27,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // Call it inside your DOMContentLoaded listener
     initGeolocation();
 
     // 2. Load Animal Data via AJAX
