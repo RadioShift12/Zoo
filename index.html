@@ -61,7 +61,20 @@
 
     <div id="admin-panel"></div>
 
-    
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2E7D32">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registered successfully!', reg.scope))
+                .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
+    </script>
     
 </body>
 

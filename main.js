@@ -3,7 +3,7 @@ import { API } from "./modules/api.js";
 import { Security } from "./modules/security.js";
 import { UI } from "./modules/ui.js";
 import { Admin } from "./modules/admin.js";
-
+let coor = { latitude: 0, longitude: 0 };
 document.addEventListener("DOMContentLoaded", async () => {
     Security.generateCSRFToken();
     Security.createAdminToken();
@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
+                    coor = { latitude, longitude };
                     console.log(`Visitor located at: ${latitude}, ${longitude}`);
                     UI.renderAnimals(container,longitude,latitude);
                 },
@@ -27,12 +28,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
+    // PART 3: Push Notification Request Capability
+    const initNotifications = async () => {
+        if ('Notification' in window) {
+            let permission = Notification.permission;
+            if (permission === 'default') {
+                permission = await Notification.requestPermission();
+            }
+            if (permission === 'granted') {
+                console.log("Push notifications permitted.");
+            } else {
+                Security.log("NOTIFICATION_DENIED", "User blocked notifications.");
+            }
+        }
+    };
+
+    initNotifications();
+
     initGeolocation();
 
     // 2. Load Animal Data via AJAX
     const apiAnimals = await API.fetchAnimals();
     apiAnimals.forEach(Zoo.addAnimal);
-    UI.renderAnimals(container,longitude,latitude);
+    UI.renderAnimals(container,coor.longitude,coor.latitude);
 
     // 3. Initialize Dashboard
     const adminPanel = document.getElementById("admin-panel");
