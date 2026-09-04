@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Sample animal dataset
 const animals = [
     { id: 1, name: "Leeeo", species: "Lion", health: "Excellent", status: "open" },
     { id: 2, name: "Mort", species: "Orca", health: "Good", status: "open" },
@@ -15,7 +14,6 @@ const animals = [
     { id: 4, name: "Dolly", species: "Dolphin", health: "Excellent", status: "open" }
 ];
 
-// REST API Endpoint to serve animal data
 app.get('/api/animals', (req, res) => {
     res.json(animals);
 });

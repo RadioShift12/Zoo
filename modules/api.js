@@ -2,13 +2,12 @@ import { Security } from "./security.js";
 import { Storage } from "./storage.js";
 
 export const API = {
-    baseURL: "http://localhost:3000/api/animals",
+    baseURL: "./animals.json",
     loading: false,
     lastCall: 0,
     rateLimitMs: 2000,
     async fetchAnimals() {
         this.setLoading(true);
-        console.log("HEHEHEHHEHEHEHEHEHEHEHEHE")
         try {
             const response = await fetch(this.baseURL, {
                 method: "GET",
