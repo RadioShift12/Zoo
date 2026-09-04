@@ -3,6 +3,7 @@ import { API } from "./modules/api.js";
 import { Security } from "./modules/security.js";
 import { UI } from "./modules/ui.js";
 import { Admin } from "./modules/admin.js";
+import './components/AnimalCard.js';
 let coor = { latitude: 0, longitude: 0 };
 document.addEventListener("DOMContentLoaded", async () => {
     Security.generateCSRFToken();

@@ -2,12 +2,43 @@ import { Security } from "./security.js";
 import { Storage } from "./storage.js";
 
 export const API = {
-    baseURL: "./animals.json",
+    baseURL: "http://localhost:3000/api/animals",
     loading: false,
     lastCall: 0,
     rateLimitMs: 2000,
+    async fetchAnimals() {
+        this.setLoading(true);
+        console.log("HEHEHEHHEHEHEHEHEHEHEHEHE")
+        try {
+            const response = await fetch(this.baseURL, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
 
-    fetchAnimals: async () => {
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error("Failed to fetch animals from Node API:", error.message);
+            return [];
+        } finally {
+            this.setLoading(false);
+        }
+    },
+
+    setLoading(state) {
+        this.loading = state;
+        const loader = document.getElementById("loading");
+        if (loader) {
+            loader.textContent = state ? "Loading..." : "";
+        }
+    },
+    fetchAnimales: async () => {
         // Rate Limiting Logic
         const now = Date.now();
         if (now - API.lastCall < API.rateLimitMs) {

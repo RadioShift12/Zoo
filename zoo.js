@@ -247,58 +247,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderZoo() {
         if (!container) return;
-        
 
         while (container.firstChild) {
             container.removeChild(container.firstChild);
         }
 
         zoo.animals.forEach((animal, index) => {
-            try {
-                
-                const { name, species, availability, status: health } = animal;
+            // Construct the Web Component via DOM API
+            const card = document.createElement('animal-card');
+            
+            // Pass data via attributes (or custom properties)
+            card.setAttribute('name', Security.sanitize(animal.name));
+            card.setAttribute('species', Security.sanitize(animal.species));
+            card.setAttribute('health', Security.sanitize(animal.status));
+            card.setAttribute('availability', animal.availability);
 
-                const card = document.createElement('div');
-                card.className = `animal-card ${availability}`;
+            // Listen for Custom Events emitted from shadow DOM
+            card.addEventListener('toggle-status', () => {
+                animal.availability = animal.availability === 'open' ? 'closed' : 'open';
+                renderZoo();
+            });
 
-                const title = document.createElement('h3');
-                title.textContent = Security.sanitize(name);
+            card.addEventListener('update-health', () => {
+                if (Security.isAdmin()) {
+                    openHealthModal(index);
+                } else {
+                    zoo.handleError("Unauthorized: Admin role required.");
+                }
+            });
 
-                const speciesPara = document.createElement('p');
-                const speciesLabel = document.createElement('strong');
-                speciesLabel.textContent = "Species: ";
-                speciesPara.append(speciesLabel, Security.sanitize(species));
-
-                const healthPara = document.createElement('p');
-                const healthLabel = document.createElement('strong');
-                healthLabel.textContent = "Health: ";
-                healthPara.append(healthLabel, Security.sanitize(health));
-
-                const actionsDiv = document.createElement('div');
-                
-                const toggleBtn = document.createElement('button');
-                toggleBtn.textContent = 'Toggle Status';
-                toggleBtn.onclick = () => {
-                    animal.availability = animal.availability === 'open' ? 'closed' : 'open';
-                    renderZoo();
-                };
-
-                const healthBtn = document.createElement('button');
-                healthBtn.textContent = 'Update Health';
-                healthBtn.onclick = () => {
-                    if(Security.isAdmin()) {
-                        openHealthModal(index);
-                    } else {
-                        zoo.handleError("Unauthorized: Admin role required.");
-                    }
-                };
-
-                actionsDiv.append(toggleBtn, healthBtn);
-                card.append(title, speciesPara, healthPara, actionsDiv);
-                container.appendChild(card);
-            } catch (error) {
-                zoo.handleError(`Rendering failed: ${error.message}`);
-            }
+            container.appendChild(card);
         });
 
         populateAnimalOptions();
