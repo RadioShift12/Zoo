@@ -2,7 +2,7 @@ import { Security } from "./security.js";
 import { Storage } from "./storage.js";
 
 export const API = {
-    baseURL: "./animals.json",
+    baseURL: "https://zooapi-l8nh.onrender.com/api/animals",
     loading: false,
     lastCall: 0,
     rateLimitMs: 2000,
