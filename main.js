@@ -5,12 +5,100 @@ import { UI } from "./modules/ui.js";
 import { Admin } from "./modules/admin.js";
 import './components/AnimalCard.js';
 let coor = { latitude: 0, longitude: 0 };
+const REGEX_PATTERNS = {
+    // Allows 2-30 letters/spaces, starting with a capital letter
+    name: /^[A-Z][a-zA-Z\s]{1,29}$/,
+    // Allows 2-30 letters/spaces, starting with a capital letter
+    species: /^[A-Z][a-zA-Z\s]{1,29}$/,
+    // Health keywords
+    health: /^(Healthy|Good|Excellent|Fair|Sick|Critical)$/i
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
     Security.generateCSRFToken();
     Security.createAdminToken();
 
     const container = document.getElementById("zoo-container");
     const feedback = document.getElementById("form-feedback");
+    const addAnimalForm = document.getElementById("add-animal-form");
+    const globalFeedback = document.getElementById("add-animal-feedback");
+
+
+
+    if (addAnimalForm) {
+        // I didnt want to type it multiple times.
+        const validateField = (inputEl, feedbackEl, regex, errorMsg) => {
+            const value = inputEl.value.trim();
+            if (!regex.test(value)) {
+                inputEl.classList.add("invalid");
+                inputEl.classList.remove("valid");
+                feedbackEl.textContent = errorMsg;
+                feedbackEl.className = "feedback-msg error";
+                return false;
+            } else {
+                inputEl.classList.add("valid");
+                inputEl.classList.remove("invalid");
+                feedbackEl.textContent = "✓ Looks good!";
+                feedbackEl.className = "feedback-msg success";
+                return true;
+            }
+        };
+
+        const nameInput = document.getElementById("animal-name");
+        const nameFeedback = document.getElementById("name-feedback");
+        const speciesInput = document.getElementById("animal-species");
+        const speciesFeedback = document.getElementById("species-feedback");
+        const healthInput = document.getElementById("animal-health");
+        const healthFeedback = document.getElementById("health-feedback");
+
+        // Input listeners for real time validation
+        nameInput?.addEventListener("input", () => {
+            validateField(nameInput, nameFeedback, REGEX_PATTERNS.name, "Name must start with a capital letter and contain only letters (min 2 chars).");
+        });
+
+        speciesInput?.addEventListener("input", () => {
+            validateField(speciesInput, speciesFeedback, REGEX_PATTERNS.species, "Species must start with a capital letter and contain only letters (min 2 chars).");
+        });
+
+        healthInput?.addEventListener("input", () => {
+            validateField(healthInput, healthFeedback, REGEX_PATTERNS.health, "Please enter a valid status (Healthy, Good, Excellent, Fair, Sick).");
+        });
+
+        addAnimalForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // One more validation, just in case.
+            const isNameValid = validateField(nameInput, nameFeedback, REGEX_PATTERNS.name, "Name must start with a capital letter and contain only letters (min 2 chars).");
+            const isSpeciesValid = validateField(speciesInput, speciesFeedback, REGEX_PATTERNS.species, "Species must start with a capital letter and contain only letters (min 2 chars).");
+            const isHealthValid = validateField(healthInput, healthFeedback, REGEX_PATTERNS.health, "Please enter a valid status (Healthy, Good, Excellent, Fair, Sick).");
+
+            if (isNameValid && isSpeciesValid && isHealthValid) {
+                const newAnimalData = {
+                    id: Date.now(),
+                    name: nameInput.value.trim(),
+                    species: speciesInput.value.trim(),
+                    health: healthInput.value.trim(),
+                    status: "closed"
+                };
+
+                Zoo.addAnimal(newAnimalData);
+                UI.renderAnimals(container, coor.longitude, coor.latitude);
+                globalFeedback.style.color = "#2E7D32";
+                globalFeedback.textContent = `Success, ${newAnimalData.name} the ${newAnimalData.species} was added to the zoo.`;
+
+                // Reset form
+                addAnimalForm.reset();
+                [nameInput, speciesInput, healthInput].forEach(el => el.classList.remove("valid", "invalid"));
+                [nameFeedback, speciesFeedback, healthFeedback].forEach(el => el.textContent = "");
+            } else {
+                // Failure
+                globalFeedback.style.color = "#d32f2f";
+                globalFeedback.textContent = "Please fix form errors before submitting.";
+            }
+        });
+    }
+
+
 
         // Part 3: Geolocation Implementation
     const initGeolocation = () => {

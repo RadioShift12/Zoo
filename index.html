@@ -14,6 +14,30 @@
     <hr>
 <p>The code does work, though the server hosting the api may take a bit to start up.</p>
 
+<section id="add-animal-section">
+    <h3>Add New Animal</h3>
+    <form id="add-animal-form" novalidate>
+        <div class="form-group">
+            <input type="text" id="animal-name" placeholder="Animal Name" required>
+            <span class="feedback-msg" id="name-feedback"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="animal-species" placeholder="Species" required>
+            <span class="feedback-msg" id="species-feedback"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="animal-health" placeholder="Health Status" required>
+            <span class="feedback-msg" id="health-feedback"></span>
+        </div>
+
+        <button type="submit">Add Animal</button>
+    </form>
+    <div id="add-animal-feedback" class="status-pill"></div>
+</section>
+
+
 <section id="membership-section">
     <h3>Member Registration</h3>
     <form id="membership-form">
