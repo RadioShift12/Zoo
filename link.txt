@@ -1,1 +1,7 @@
 https://zoo-9qur.onrender.com
+
+
+
+
+A custom testing script was implemented inside main.js to automatically run and log validation and security checks
+using console.table. Three core tests were written to verify valid animal creation, XSS input sanitization, and CSRF token generation. 

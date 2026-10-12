@@ -197,4 +197,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     cancelBtn?.addEventListener("click", () => {
         document.getElementById("health-modal").classList.add("hidden");
     });
+    setTimeout(() => {
+        runZooTests();
+    }, 1000);
 });
+
+
+
+function runZooTests() {
+    console.log("--- Zoo Tests ---");
+    const testResults = [];
+
+    function assert(testName, condition) {
+        const result = condition ? "PASS (Green)" : "FAIL (Red)";
+        testResults.push({ Test: testName, Result: result });
+    }
+
+    // TEST 1
+   try {
+        Zoo.addAnimal({ id: 99, name: "TestLion", species: "Lion", health: "Healthy", status: "open" });
+        assert("Test 1: Valid Animal Creation", true);
+    } catch (e) {
+        assert("Test 1: Valid Animal Creation", false);
+    }
+
+    // TEST 2
+    const maliciousInput = "<script>alert('hack')</script>";
+    const sanitizedOutput = Security.sanitize(maliciousInput);
+    assert("Test 2: XSS Input Sanitization", sanitizedOutput === "&lt;script&gt;alert(&#39;hack&#39;)&lt;/script&gt;");
+
+    // TEST 3
+    const token = Security.generateCSRFToken();
+    assert("Test 3: CSRF Token Exists", token !== null && token.length > 0);
+
+    console.table(testResults);
+    console.log("--- Tests Complete ---");
+}
+
