@@ -82,19 +82,34 @@
         </div>
     </div>
 
+    <div id="fund-modal" class="modal hidden">
+        <div class="modal-content">
+            <h4 id="fund-modal-title">Donate</h4>
+            <input type="number" id="fund-amount" min="0.01" step="0.01" placeholder="Amount ($)">
+            <input type="text" id="fund-note" placeholder="Note (optional)">
+            <p id="fund-error" class="feedback-msg error"></p>
+            <div class="modal-actions">
+                <button id="fund-save-btn">Confirm</button>
+                <button id="fund-cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+
     <div id="zoo-container" class="card-grid"></div>
 
     <div id="admin-panel"></div>
 
-    <link rel="manifest" href="./manifest.json">
+    <link rel="manifest" href="/manifest.json">
+
     <meta name="theme-color" content="#2E7D32">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
+            navigator.serviceWorker.register('/sw.js')
                 .then(reg => console.log('Service Worker registered successfully!', reg.scope))
                 .catch(err => console.error('Service Worker registration failed:', err));
             });

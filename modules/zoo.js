@@ -1,4 +1,5 @@
 import { Animal } from "./animal.js";
+import { Storage } from "./storage.js";
 
 export const Zoo = (() => {
     const state = {
@@ -11,7 +12,8 @@ export const Zoo = (() => {
 
     const addAnimal = (data) => {
         try {
-            const animal = new Animal(data);
+            const saved = Storage.loadFunds()[data.id];
+            const animal = new Animal({ ...data, fund: saved });
             state.animals.push(animal);
         } catch (err) {
             console.error("[Zoo:addAnimal]", err.message);
@@ -34,12 +36,19 @@ export const Zoo = (() => {
         state.visitorCount++;
     };
 
+    const saveFunds = () => {
+        const map = {};
+        state.animals.forEach(a => { map[a.id] = a.fund.balance; });
+        Storage.saveFunds(map);
+    };
+
     return {
         state,
         addAnimal,
         getAnimals,
         incrementVisitors,
         addBooking,
-        addMember
+        addMember,
+        saveFunds
     };
 })();

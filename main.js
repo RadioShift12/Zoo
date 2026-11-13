@@ -4,6 +4,46 @@ import { Security } from "./modules/security.js";
 import { UI } from "./modules/ui.js";
 import { Admin } from "./modules/admin.js";
 import './components/AnimalCard.js';
+import { ValueError, AnimalFund } from "./modules/fund.js";
+
+function runFundTests() {
+    console.log("--- Fund Tests ---");
+    const results = [];
+    const assert = (name, cond) =>
+        results.push({ Test: name, Result: cond ? "PASS (Green)" : "FAIL (Red)" });
+
+    const throwsValueError = (fn) => {
+        try { fn(); return false; }
+        catch (e) { return e instanceof ValueError; }
+    };
+
+    // TEST 1
+    const f1 = new AnimalFund(10);
+    f1.deposit(5);
+    assert("Test 1: Deposit increases balance", f1.balance === 15);
+
+    // TEST 2
+    const f2 = new AnimalFund(10);
+    assert("Test 2: Negative deposit throws ValueError", throwsValueError(() => f2.deposit(-5)));
+
+    // TEST 3
+    const f3 = new AnimalFund(10);
+    assert("Test 3: Overdraw throws ValueError", throwsValueError(() => f3.withdraw(50, true)));
+
+    // TEST 4
+    const f4 = new AnimalFund(10);
+    f4.close();
+    assert("Test 4: Closed fund rejects all transactions",
+        throwsValueError(() => f4.deposit(5)) && throwsValueError(() => f4.withdraw(5, true)));
+
+    // TEST 5
+    const f5 = new AnimalFund(10);
+    assert("Test 5: Non-admin cannot withdraw", throwsValueError(() => f5.withdraw(5, false)));
+
+    console.table(results);
+    console.log("--- Fund Tests Complete ---");
+}
+
 let coor = { latitude: 0, longitude: 0 };
 const REGEX_PATTERNS = {
     // Allows 2-30 letters/spaces, starting with a capital letter
@@ -188,6 +228,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cancelBtn = document.getElementById("cancel-health-btn");
     const input = document.getElementById("health-input");
 
+    
+
+
+
+        // 7. Fund Modal Logic
+    const fundModal = document.getElementById("fund-modal");
+    const fundError = document.getElementById("fund-error");
+
+    document.getElementById("fund-save-btn")?.addEventListener("click", () => {
+        const { index, mode } = Zoo.state.fundAction ?? {};
+        if (index === undefined) return;
+
+        const animal = Zoo.getAnimals()[index];
+        const amount = parseFloat(document.getElementById("fund-amount").value);
+        const note = Security.sanitize(document.getElementById("fund-note").value.trim());
+
+        try {
+            if (mode === "donate") animal.fund.deposit(amount);
+            else animal.fund.withdraw(amount, Security.isAdmin());
+
+            Security.log("FUND_OK", `${mode} $${amount} on ${animal.name}. Note: ${note}`);
+            Zoo.saveFunds();
+            fundModal.classList.add("hidden");
+            UI.renderAnimals(container, coor.longitude, coor.latitude);
+        } catch (err) {
+            if (err instanceof ValueError) {
+                Security.log("FUND_REJECTED", err.message); // logged, no crash
+                fundError.textContent = err.message;
+            } else {
+                throw err;
+            }
+        }
+    });
+
+    document.getElementById("fund-cancel-btn")?.addEventListener("click", () => {
+        fundModal.classList.add("hidden");
+    });
+
     saveBtn?.addEventListener("click", () => {
         Admin.saveHealthUpdate(input.value);
         document.getElementById("health-modal").classList.add("hidden");
@@ -199,6 +277,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     setTimeout(() => {
         runZooTests();
+        runFundTests();
     }, 1000);
 });
 

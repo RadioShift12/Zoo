@@ -70,7 +70,23 @@ export const UI = {
                 UI.openHealthModal(index);
             };
             populateAnimalOptions();
-            card.append(title, species, health, schedule, coords, distText, btnToggle, btnHealth);
+
+
+            const fundText = document.createElement("p");
+            fundText.className = "fund-balance";
+            fundText.textContent = `Sponsorship Fund: $${animal.fund.balance.toFixed(2)}${animal.fund.isOpen ? "" : " (closed)"}`;
+
+            const btnDonate = document.createElement("button");
+            btnDonate.textContent = "Donate";
+            btnDonate.onclick = () => UI.openFundModal(index, "donate");
+
+            const btnSpend = document.createElement("button");
+            btnSpend.textContent = "Spend";
+            btnSpend.onclick = () => UI.openFundModal(index, "spend");
+
+
+            card.append(title, species, health, schedule, coords, distText, fundText, btnToggle, btnHealth, btnDonate);
+            if (Security.isAdmin()) card.append(btnSpend);
             container.appendChild(card);
         });
     },
@@ -83,5 +99,17 @@ export const UI = {
         input.value = Zoo.getAnimals()[index].status;
 
         modal.classList.remove("hidden");
+    },
+
+        openFundModal: (index, mode) => {
+        const animal = Zoo.getAnimals()[index];
+        Zoo.state.fundAction = { index, mode };
+
+        document.getElementById("fund-modal-title").textContent =
+            mode === "donate" ? `Donate to ${animal.name}` : `Spend from ${animal.name}'s fund`;
+        document.getElementById("fund-amount").value = "";
+        document.getElementById("fund-note").value = "";
+        document.getElementById("fund-error").textContent = "";
+        document.getElementById("fund-modal").classList.remove("hidden");
     }
 };

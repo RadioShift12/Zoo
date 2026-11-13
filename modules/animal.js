@@ -1,10 +1,10 @@
-// Animal module
-// Handles ONLY animal data model + validation
+import { AnimalFund } from "./fund.js";
 
 export class Animal {
     #healthStatus;
 
-    constructor({ id, name, species, health = "Healthy", status = "closed", coords, feeding, maintenance }) {        
+    constructor({ id, name, species, health = "Healthy", status = "closed", coords, feeding, maintenance, fund }) {
+        
         if (typeof id !== "number" || typeof name !== "string" || typeof species !== "string") {
             throw new Error("Invalid Animal constructor data");
         }
@@ -18,6 +18,7 @@ export class Animal {
         this.coords = coords || { lat: 0, lng: 0 }; 
         this.feedingSchedule = feeding || "Not set";
         this.maintenanceRecords = maintenance || [];
+        this.fund = new AnimalFund(Number.isFinite(fund) && fund >= 0 ? fund : 0);
     }
 
     getDistanceTo(visitorLat, visitorLng) { // I found this part online.

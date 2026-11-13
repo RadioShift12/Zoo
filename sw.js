@@ -1,19 +1,11 @@
-const CACHE_NAME = 'ntc-zoo-cache-v1';
+const CACHE_NAME = 'ntc-zoo-cache-v2';
 const ASSETS = [
   './',
   './index.html',
-  './styles.css',
-  './main.js',
   './animals.json',
   './zoo-status.json',
   './visitors.json',
-  './modules/admin.js',
-  './modules/animal.js',
-  './modules/api.js',
-  './modules/security.js',
-  './modules/storage.js',
-  './modules/ui.js',
-  './modules/zoo.js'
+  './manifest.json'
 ];
 
 // Cache assets

@@ -21,5 +21,21 @@ export const Storage = {
             Security.log("STORAGE_ERROR", e);
             return null;
         }
+    },
+        saveFunds: (fundMap) => {
+        try {
+            localStorage.setItem("zoo_funds", JSON.stringify(fundMap));
+        } catch (err) {
+            Security.log("STORAGE_ERROR", err.message);
+        }
+    },
+
+    loadFunds: () => {
+        try {
+            return JSON.parse(localStorage.getItem("zoo_funds")) || {};
+        } catch (err) {
+            Security.log("STORAGE_ERROR", err.message);
+            return {};
+        }
     }
 };
